@@ -32,5 +32,10 @@ due to the limitations the solution was to use a second lora addon module at the
 ### bad value filtering
 - had some random data errors, therefore added some filtering of the data, also added the stat_h6_pv_power_err sensor to get an idea how often the issue occurs
 
+## links
+code example
+- https://github.com/ALLTERCO/shelly-script-examples
+- https://community.shelly.cloud/topic/9592-shelly-lora-addon-script-examples/
+
 ## disclaimer
 got a lot of help from claude and chatgpt to iron out the details, and as usual also a runaround once in a while, but once you have gotten a feel for where there current issues lie (tailspin ;-) they can be of great help.
