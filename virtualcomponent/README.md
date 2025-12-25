@@ -6,6 +6,7 @@ In order to be able to send data via the LoRa interface, collect the data from o
 
 - the Unit of the virtual component will be useful in the shelly integration, but the automatically created number. entity in HA will not have that unit nor can it be used for statistics.
 - to be able to get statistics in HA, define template sensor for them
+- make sure that for power components to allow for negative numbers, feed in are normally negative numbers in aenergy
 
 ## Example
 
