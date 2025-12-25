@@ -1,18 +1,12 @@
-# lora tests
+# Shelly Virtual Components
 
-## setup
-- make sure both shelly have the Add-on on the left menu in the web interface
-- set the Add-on to LoRa Add-on
-- configure BOTH addons to the same paramters
-  -- have the shelly a few meters apart and select the Balanced Preset
-- enable the Lora receive feature on both
-- it is ok if both shelly have the LoRa Add-on at id 100
+In order to be able to send data via the LoRa interface, collect the data from other Shelly devices and save them in virtual components. That way the LoRa code can easily acccess the data to be sent.
 
-## script setup
-add both scripts lora_snd_test.js to each shelly.
-that way you can have both be sender and receiver
+## notes
 
-## tests
-- run the receiver script on one shelly, then snd on the other
-- check a) the console output in Scripts section of the Web interface, then select the script to run and b) also the Sent and Received byte counts in the Add-on section of the Web interface
-- it took me a few tries, had the two shellies only 30 cm apart originally, send wrould work but not recieve, then i swapped roles and eventually i got data on both
+- the Unit of the virtual component will be useful in the shelly integration, but the automatically created number. entity in HA will not have that unit nor can it be used for statistics.
+- to be able to get statistics in HA, define template sensor for them
+
+## Example
+
+<img width="1401" height="840" alt="shelly virtual component" src="https://github.com/user-attachments/assets/6a04d055-7dcd-40e2-96a8-816d0b0c2d67" />
