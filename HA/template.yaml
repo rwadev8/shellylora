@@ -5,8 +5,8 @@ template:
     - name: "stat_h6_energy"
       unique_id: stat_h6_energy
       state: >
-        {% set val = states('number.s4lo02_h6energy') | float(none) %}
-        {% if val is not none %}
+        {% set val = states('number.s4lo02_h6energy') %}
+        {% if val not in ['unknown', 'unavailable', 'none', ''] %}
           {{ (val | float / 1000) | round(2) }}
         {% endif %}
       unit_of_measurement: kWh
@@ -32,8 +32,8 @@ template:
     - name: "stat_h6_pv_energy"
       unique_id: stat_h6_pv_energy
       state: >
-        {% set val = states('number.s4lo02_h6pvenergy') | float(none) %}
-        {% if val is not none %}
+        {% set val = states('number.s4lo02_h6pvenergy') %}
+        {% if val not in ['unknown', 'unavailable', 'none', ''] %}
           {{ (val | float / 1000) | round(2) }}
         {% endif %}
       unit_of_measurement: kWh
