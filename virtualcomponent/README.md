@@ -1,6 +1,7 @@
 # Shelly Virtual Components
 
 In order to be able to send data via the LoRa interface, collect the data from other Shelly devices and save them in virtual components. That way the LoRa code can easily acccess the data to be sent.
+The same is being done on the receiving end, so that Shelly also needs to have virutal components. The Data of those are then saved via template sensors in HA.
 
 ## notes
 
