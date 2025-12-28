@@ -1,14 +1,11 @@
 template:
-
-  #h6 power data
   - sensor:
     - name: "stat_h6_energy"
       unique_id: stat_h6_energy
       state: >
-        {% set val = states('number.s4lo02_h6energy') %}
-        {% if val not in ['unknown', 'unavailable', 'none', ''] %}
-          {{ (val | float / 1000) | round(2) }}
-        {% endif %}
+        {{ (states('number.s4lo02_h6energy') | float / 1000) | round(2) }}
+      availability: >
+        {{ states('number.s4lo02_h6energy') not in ['unknown', 'unavailable', 'none', ''] }}
       unit_of_measurement: kWh
       device_class: energy
       state_class: total_increasing
@@ -24,18 +21,19 @@ template:
         {# jinja short form {% if val is not none and -1000 <= val <= 15000 %} #}
           {{ val | round(0) }}
         {% endif %}
+      availability: >
+        {{ states('number.s4lo02_h6power') not in ['unknown', 'unavailable', 'none', ''] }}
       unit_of_measurement: W
       device_class: power
       state_class: measurement
-                                                                              
+
   - sensor:
     - name: "stat_h6_pv_energy"
       unique_id: stat_h6_pv_energy
       state: >
-        {% set val = states('number.s4lo02_h6pvenergy') %}
-        {% if val not in ['unknown', 'unavailable', 'none', ''] %}
-          {{ (val | float / 1000) | round(2) }}
-        {% endif %}
+        {{ (states('number.s4lo02_h6pvenergy') | float / 1000) | round(2) }}
+      availability: >
+        {{ states('number.s4lo02_h6pvenergy') not in ['unknown', 'unavailable', 'none', ''] }}
       unit_of_measurement: kWh
       device_class: energy
       state_class: total_increasing
@@ -50,6 +48,8 @@ template:
         {% if val is not none and val >= min_val and val <= max_val %}
           {{ val | round(0) }}
         {% endif %}
+      availability: >
+        {{ states('number.s4lo02_h6pvpower') not in ['unknown', 'unavailable', 'none', ''] }}
       unit_of_measurement: W
       device_class: power
       state_class: measurement
@@ -64,6 +64,8 @@ template:
         {% if val is not none and val < min_val and val > max_val %}
           {{ val | round(0) }}
         {% endif %}
+      availability: >
+        {{ states('number.s4lo02_h6pvpower') not in ['unknown', 'unavailable', 'none', ''] }}
       unit_of_measurement: W
       device_class: power
       state_class: measurement      
@@ -79,7 +81,6 @@ template:
         {% set max_change_percent = 0.01 * elapsed_hours %}
         {% set max_allowed_percent = prev * (1 + max_change_percent) %}
         {% set max_allowed_absolute = prev + 0.25 %}  {# 7kW results in around 250 Wh every 2 min, the lora data send interval #}
-
         {% if val is not none %}
           {% if prev == 0 %}
             {{ val }}  {# bootstrap first value #}
@@ -107,8 +108,7 @@ template:
         {% set elapsed_hours = (as_timestamp(now()) - as_timestamp(states.sensor.stat_h6_pv_energy_filtered.last_changed)) / 3600 %}
         {% set max_change_percent = 0.01 * elapsed_hours %}
         {% set max_allowed_percent = prev * (1 + max_change_percent) %}
-        {% set max_allowed_absolute = prev + 0.03 %}  {# 850 W results in around 30 Wh = 0.03 kWh every 2 min, the lora data send interval #}
-
+        {% set max_allowed_absolute = prev + 0.06 %}  {# 850 W results in around 30 Wh = 0.03 kWh every 2 min, the lora data send interval #}
         {% if val is not none %}
           {% if prev == 0 %}
             {{ val }}  {# bootstrap first value #}
