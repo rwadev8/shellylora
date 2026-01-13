@@ -6,3 +6,5 @@ the lora_snd.js take data from virtual components and sends them, the receiver t
 ## notes
 - try to pack the data as much as possible, to say below the 1% lora air time convention
 - somehow print() and console.log() would not work on the receiving side, no idea why. got the idea for the workaround from chatgpt
+- noticed that the receiver script once in a while with an unknown error, probably need to harden the receiver script
+- have had a fair amount of data spikes, will add a checksum to verify data
