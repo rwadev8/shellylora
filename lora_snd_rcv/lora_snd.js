@@ -17,6 +17,22 @@ function uint16ToBytes(n) {
     ];
 }
 
+function byteToBinary(byte) {
+  var b = (byte & 0xFF).toString(2);
+  while (b.length < 8) {
+    b = "0" + b;
+  }
+  return b;
+}
+
+function calculateXorChecksum(bytes) {
+    var checksum = 0;
+    for (var i = 0; i < bytes.length; i++) {
+        checksum ^= bytes[i];
+    }
+    return checksum;
+}
+
 function loraSend(payload) {
     print("LoRa payload: " + btoa(payload));
     Shelly.call('Lora.SendBytes', {
@@ -68,10 +84,15 @@ function addValueToPayload(payload, value, precision, byteLength) {
 
 function sendLoraData() {
     //var pvpower = getComponentValue("switch:0", "apower");
-    var energy = getComponentValue("number:200", "value");
-    var power = getComponentValue("number:201", "value");
-    var pvEnergy = getComponentValue("number:202", "value");
-    var pvPower = getComponentValue("number:203", "value");
+    var renergy = getComponentValue("number:200", "value");
+    var rpower = getComponentValue("number:201", "value");
+    var rpvEnergy = getComponentValue("number:202", "value");
+    var rpvPower = getComponentValue("number:203", "value");
+    
+    var energy = Math.ceil(Number(renergy) || 0);
+    var power= Math.ceil(Number(rpower) || 0);
+    var pvEnergy= Math.ceil(Number(rpvEnergy ) || 0);
+    var pvPower= Math.ceil(Number(rpvPower ) || 0);
     
     print("sending h6energy: " + energy + " Wh,  h6power: " + power + " W, pvEnergy: " + pvEnergy + " Wh, pvPower: " + pvPower + " W");
     
@@ -81,6 +102,11 @@ function sendLoraData() {
     addValueToPayload(payload, pvEnergy, 1, 4); // 2 decimal precision
     addValueToPayload(payload, pvPower, 1, 2); // 0 decimal precision
     
+	// to deal with data corruption, add checksum
+	var checksum = calculateXorChecksum(payload);
+	print("  checksum: 0x" + checksum.toString(16) + ", 0b" + byteToBinary(checksum));
+	payload.push(checksum);
+	
     loraSend(payload);
 }
 
