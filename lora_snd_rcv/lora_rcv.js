@@ -14,6 +14,16 @@ function bytesToUint16(bytes, offset) {
     return (bytes[offset] << 8) | bytes[offset + 1];
 }
 
+// Calculate 1-byte XOR checksum
+// `bytes` should be an array of numbers (0–255)
+function calculateXorChecksum(bytes) {
+    var checksum = 0;
+    for (var i = 0; i < bytes.length; i++) {
+        checksum ^= bytes[i];  // XOR each byte
+    }
+    return checksum; // & 0xFF;   // ensure 8-bit result
+}
+
 function asyncPrint(msg) {
     Timer.set(1, false, function() {
         print(msg);
@@ -27,15 +37,26 @@ function parseLoraPayload(data) {
         bytes.push(decoded.charCodeAt(i));
     }
     
-    if (bytes.length !== 12) {
+    if (bytes.length !== 13) {
         asyncPrint("Warning: Unexpected payload length: " + bytes.length + " bytes");
         return null;
+    }
+    else {
+      asyncPrint("received telegram: " + data + "   length: " + bytes.length + " bytes");
     }
     
     var energy = bytesToUint32(bytes, 0) / 1;
     var power = bytesToUint16(bytes, 4) / 1;
     var pvEnergy = bytesToUint32(bytes, 6) / 1;
     var pvPower= bytesToUint16(bytes, 10) / 1;
+    var receivedCS = bytes[12];
+    var dataBytes = bytes.slice(0, 12);
+    var calcCS = calculateXorChecksum(dataBytes);
+    
+    if (receivedCS !== calcCS) {
+      asyncPrint("Error: checksum missmatch,  received: " + receivedCS + "  calc: " + calcCS);
+      return null;
+    }
     
     // bug in packing, the house power can be negative if we feed into the grid, assume that we can not import more then 32 kW 
     // make sure to also allow negative value in the shelly virtual components
@@ -46,7 +67,7 @@ function parseLoraPayload(data) {
         pvPower = pvPower - 65536;
     }
    
-    asyncPrint("h6energy: " + energy + " Wh, h6power: " + power + " W, h6pvenergy: " + pvEnergy + " Wh, h6pvpower: " + pvPower + " W");
+    asyncPrint("rcv parsed h6energy: " + energy + " Wh, h6power: " + power + " W, h6pvenergy: " + pvEnergy + " Wh, h6pvpower: " + pvPower + " W");
     
     return {
         h6energy: energy,
@@ -79,7 +100,7 @@ function updateVirtualComponent(componentId, value) {
         if (error_code !== 0) {
             print("Error updating " + componentId + ": " + error_message);
         } else {
-            print("Updated " + componentId + " = " + value);
+            //print("Updated " + componentId + " = " + value);
         }
     });
 }
