@@ -31,6 +31,8 @@ due to the limitations the solution was to use a second lora addon module at the
 
 ### bad value filtering
 - had some random data errors, therefore added some filtering of the data, also added the stat_h6_pv_power_err sensor to get an idea how often the issue occurs
+- added checksum to be able to better filter the outliers
+- also noticed that sometimes the virtual component values had 1300000.00000000045 Wh values, might have cause the issue, force to int
 
 ## links
 code example
