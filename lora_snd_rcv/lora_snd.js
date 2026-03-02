@@ -33,6 +33,22 @@ function calculateXorChecksum(bytes) {
     return checksum;
 }
 
+function calculateCrc8(bytes) {
+    var crc = 0;
+    for (var i = 0; i < bytes.length; i++) {
+        crc ^= bytes[i];
+        for (var j = 0; j < 8; j++) {
+            if (crc & 0x80) {
+                crc = (crc << 1) ^ 0x07;
+            } else {
+                crc = crc << 1;
+            }
+            crc &= 0xFF;
+        }
+    }
+    return crc;
+}
+
 function loraSend(payload) {
     print("LoRa payload: " + btoa(payload));
     Shelly.call('Lora.SendBytes', {
@@ -103,7 +119,8 @@ function sendLoraData() {
     addValueToPayload(payload, pvPower, 1, 2); // 0 decimal precision
     
 	// to deal with data corruption, add checksum
-	var checksum = calculateXorChecksum(payload);
+	//var checksum = calculateXorChecksum(payload);
+	var checksum = calculateCrc8(payload);
 	print("  checksum: 0x" + checksum.toString(16) + ", 0b" + byteToBinary(checksum));
 	payload.push(checksum);
 	
