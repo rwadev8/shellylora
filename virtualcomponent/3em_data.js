@@ -9,8 +9,9 @@ let CONFIG = {
   
   // Virtual component mappings
   virtualComponents: [
-    { id: 200, path: ["emdata:0", "total_act"], type: "number", decimals: 2 },  // Energy total_act (2 decimal places)
-    { id: 201, path: ["em:0", "total_act_power"], type: "number", decimals: 0 } // Power (1 decimal place)
+    { id: 200, path: ["emdata:0", "total_act"], type: "number", decimals: 0 },  // Energy total_act (0 decimal places, Wh"")
+    { id: 201, path: ["em:0", "total_act_power"], type: "number", decimals: 0 }, // Power (1 decimal place)
+    { id: 204, path: ["emdata:0", "total_act_ret"], type: "number", decimals: 0 }
   ]
 };
 
